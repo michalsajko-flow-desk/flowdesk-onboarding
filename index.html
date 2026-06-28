@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowDesk – Čo potrebujeme od vás</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f2;
+    --surface: #ffffff;
+    --border: #e8e6e0;
+    --accent: #2d6a4f;
+    --accent-light: #e8f5ee;
+    --text: #1a1a18;
+    --muted: #6b6b65;
+    --tag-bg: #eef7f2;
+    --tag-border: #b7dfc8;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .logo span { color: var(--accent); }
+
+  .header-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--tag-bg);
+    border: 1px solid var(--tag-border);
+    padding: 4px 12px;
+    border-radius: 100px;
+    letter-spacing: 0.08em;
+  }
+
+  .hero {
+    max-width: 720px;
+    margin: 64px auto 0;
+    padding: 0 32px;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  .hero p {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+  }
+
+  .content {
+    max-width: 720px;
+    margin: 48px auto 80px;
+    padding: 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* HOW IT WORKS */
+  .steps-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .steps-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  .steps-row {
+    display: flex;
+    gap: 0;
+    align-items: flex-start;
+  }
+
+  .step-item {
+    flex: 1;
+    text-align: center;
+    padding: 0 8px;
+    position: relative;
+  }
+
+  .step-item:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -8px;
+    top: 12px;
+    color: var(--accent);
+    font-size: 16px;
+  }
+
+  .step-emoji {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .step-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .step-examples {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  /* FORM SECTION */
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .form-card-header {
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--border);
+    background: #fafaf8;
+  }
+
+  .form-card-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .form-card-header p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .form-embed {
+    width: 100%;
+    border: none;
+    display: block;
+    min-height: 640px;
+  }
+
+  /* INFO BOXES */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .info-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .info-box-icon {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .info-box-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .info-box-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  /* NOTE */
+  .note-box {
+    background: var(--tag-bg);
+    border: 1px solid var(--tag-border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--accent);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    line-height: 1.55;
+  }
+
+  .note-box::before {
+    content: '→';
+    flex-shrink: 0;
+    font-weight: 700;
+    margin-top: 1px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 32px;
+    color: var(--muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    header { padding: 20px; }
+    .hero, .content { padding: 0 20px; }
+    .hero { margin-top: 40px; }
+    .info-grid { grid-template-columns: 1fr; }
+    .steps-row { flex-direction: column; gap: 16px; }
+    .step-item:not(:last-child)::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Flow<span>Desk</span></div>
+  <div class="header-tag">ONBOARDING</div>
+</header>
+
+<div class="hero">
+  <div class="hero-label">Pred implementáciou</div>
+  <h1>Začnime spoluprácu</h1>
+  <p>Vyplňte krátky formulár nižšie — zistíme, čo už máte a čo nastavíme. Väčšinu technických vecí vyriešime za vás.</p>
+</div>
+
+<div class="content">
+
+  <!-- HOW IT WORKS -->
+  <div class="steps-card">
+    <div class="steps-title">Ako bude váš systém fungovať</div>
+    <div class="steps-row">
+      <div class="step-item">
+        <div class="step-emoji">📝</div>
+        <div class="step-label">Formulár</div>
+        <div class="step-examples">Google Forms<br>Jira Forms</div>
+      </div>
+      <div class="step-item">
+        <div class="step-emoji">📋</div>
+        <div class="step-label">Úloha</div>
+        <div class="step-examples">Trello<br>Jira</div>
+      </div>
+      <div class="step-item">
+        <div class="step-emoji">💬</div>
+        <div class="step-label">Notifikácia</div>
+        <div class="step-examples">Slack<br>Google Chat</div>
+      </div>
+      <div class="step-item">
+        <div class="step-emoji">🔄</div>
+        <div class="step-label">Aktualizácia</div>
+        <div class="step-examples">Thread reply<br>automaticky</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <h2>Vyplňte o vás pár informácií</h2>
+      <p>Trvá to 2 minúty. Na základe odpovedí pripravíme implementáciu presne pre vás.</p>
+    </div>
+    <iframe
+      class="form-embed"
+      src="https://docs.google.com/forms/d/e/1FAIpQLSeFhZUGP9Bc_v57gtFr7ZBao1OcWWzHPmkCxw_rit9_YJPWqw/viewform?embedded=true"
+      frameborder="0"
+      marginheight="0"
+      marginwidth="0">
+      Načítava sa…
+    </iframe>
+  </div>
+
+  <!-- INFO BOXES -->
+  <div class="info-grid">
+    <div class="info-box">
+      <div class="info-box-icon">⏱️</div>
+      <div class="info-box-title">Implementácia do 5 dní</div>
+      <div class="info-box-text">Nastavíme celý systém na vašich účtoch. Vy ho dostanete funkčný a zdokumentovaný.</div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-icon">💳</div>
+      <div class="info-box-title">Jednorazová platba</div>
+      <div class="info-box-text">Žiadne mesačné poplatky. Systém zostáva váš — bez viazanosti na nás.</div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-icon">🔐</div>
+      <div class="info-box-title">Vaše účty, vaše dáta</div>
+      <div class="info-box-text">Pracujeme len vo vašich účtoch. Po odovzdaní nás odoberieme zo všetkých prístupov.</div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-icon">📖</div>
+      <div class="info-box-title">Odovzdanie s manuálom</div>
+      <div class="info-box-text">Dostanete dokumentáciu a krátke zaškolenie, aby ste systém vedeli sami spravovať.</div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    Po vyplnení formulára vás kontaktujeme do 24 hodín a dohodneme si bezplatný 30-minútový hovor kde si doladíme detaily.
+  </div>
+
+</div>
+
+<footer>
+  <p>Otázky? Napíšte nám — <a href="mailto:hello@flowdesk.sk">hello@flowdesk.sk</a></p>
+  <p style="margin-top:8px;font-size:11px;opacity:0.6;">FlowDesk · Jednorazová implementácia workflow automatizácie</p>
+</footer>
+
+</body>
+</html>

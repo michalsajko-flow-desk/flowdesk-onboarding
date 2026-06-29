@@ -7,25 +7,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23ffffff'/><text x='50' y='68' font-family='Georgia,serif' font-size='48' font-weight='bold' text-anchor='middle'><tspan fill='%231a1a1a'>f</tspan><tspan fill='%232D6A4F'>d</tspan></text></svg>">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0c0e09;
-  --surface: #111408;
-  --surface2: #161a0c;
-  --surface3: #1c2110;
-  --border: rgba(168,224,99,0.08);
-  --border-med: rgba(168,224,99,0.14);
-  --border-strong: rgba(168,224,99,0.28);
-  --accent: #a8e063;
-  --accent-hover: #c5f07a;
-  --accent-dim: rgba(168,224,99,0.10);
-  --accent-dim2: rgba(168,224,99,0.06);
-  --text: #e4ead8;
-  --muted: #4a5340;
-  --muted2: #7a8a70;
-  --white: #f0f4e8;
+  --bg: #ffffff;
+  --surface: #f7f8f9;
+  --surface2: #f0f2f4;
+  --surface3: #e8eaed;
+  --border: #e8eaed;
+  --border-med: #d4d8dd;
+  --border-strong: rgba(45,106,79,0.35);
+  --accent: #2d6a4f;
+  --accent-hover: #235840;
+  --accent-dim: rgba(45,106,79,0.08);
+  --accent-dim2: rgba(45,106,79,0.04);
+  --text: #0f1117;
+  --muted: #9ca3af;
+  --muted2: #6b7280;
+  --white: #ffffff;
 }
 
 html { scroll-behavior: smooth; }
@@ -39,24 +40,12 @@ body {
   min-height: 100vh;
 }
 
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image:
-    linear-gradient(rgba(168,224,99,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(168,224,99,0.025) 1px, transparent 1px);
-  background-size: 60px 60px;
-  mask-image: radial-gradient(ellipse 100% 60% at 50% 0%, black 0%, transparent 80%);
-  pointer-events: none;
-  z-index: 0;
-}
-
 /* ── PROGRESS ── */
 .progress-wrap {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: transparent;
+  background: var(--border);
   z-index: 200;
 }
 .progress-bar {
@@ -75,6 +64,8 @@ nav {
   justify-content: space-between;
   padding: 1.3rem 3rem;
   border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(16px);
 }
 
 .logo {
@@ -82,7 +73,7 @@ nav {
   font-weight: 800;
   font-size: 1.2rem;
   letter-spacing: -0.02em;
-  color: var(--white);
+  color: var(--text);
   text-decoration: none;
 }
 .logo span { color: var(--accent); }
@@ -137,7 +128,7 @@ nav {
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.06;
-  color: var(--white);
+  color: var(--text);
   margin-bottom: 1rem;
 }
 .hero h1 em {
@@ -176,6 +167,7 @@ nav {
   font-size: 0.8rem;
   color: var(--muted2);
 }
+.call-meta-item svg { color: var(--accent); }
 .call-meta-item strong { color: var(--text); font-weight: 500; }
 .call-sep { width: 1px; height: 16px; background: var(--border-med); }
 
@@ -191,14 +183,15 @@ nav {
 /* ── SECTION ── */
 .form-section {
   margin-bottom: 1.8rem;
-  background: var(--surface);
+  background: var(--white);
   border: 1px solid var(--border);
   border-radius: 16px;
   overflow: hidden;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 .form-section:focus-within {
-  border-color: var(--border-med);
+  border-color: var(--border-strong);
+  box-shadow: 0 4px 24px rgba(45,106,79,0.06);
 }
 
 .section-header {
@@ -207,12 +200,12 @@ nav {
   gap: 0.85rem;
   padding: 1.2rem 1.6rem;
   border-bottom: 1px solid var(--border);
-  background: var(--accent-dim2);
+  background: var(--surface);
 }
 .section-num {
   width: 26px; height: 26px;
-  background: var(--surface2);
-  border: 1px solid var(--border-med);
+  background: var(--white);
+  border: 1px solid var(--border-strong);
   border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
   font-family: 'Syne', sans-serif;
@@ -225,7 +218,7 @@ nav {
   font-family: 'Syne', sans-serif;
   font-weight: 700;
   font-size: 0.92rem;
-  color: var(--white);
+  color: var(--text);
 }
 .section-desc {
   font-size: 0.75rem;
@@ -251,7 +244,7 @@ nav {
 .hint {
   display: block;
   font-size: 0.72rem;
-  color: var(--muted2);
+  color: var(--muted);
   margin-top: 0.35rem;
   line-height: 1.5;
 }
@@ -261,8 +254,8 @@ nav {
 .field textarea,
 .field select {
   width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border-med);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 9px;
   color: var(--text);
   font-family: 'DM Sans', sans-serif;
@@ -280,10 +273,10 @@ nav {
 .field textarea:focus,
 .field select:focus {
   border-color: var(--border-strong);
-  background: var(--surface3);
+  background: var(--white);
 }
 .field textarea { resize: vertical; min-height: 88px; line-height: 1.6; }
-.field select option { background: #161a0c; }
+.field select option { background: var(--white); }
 
 /* ── CHIPS ── */
 .chips { display: flex; flex-wrap: wrap; gap: 7px; }
@@ -301,11 +294,12 @@ nav {
   user-select: none;
   -webkit-appearance: none;
 }
-.chip:hover { border-color: var(--border-strong); color: var(--text); }
+.chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 .chip.selected {
   border-color: var(--border-strong);
   background: var(--accent-dim);
   color: var(--accent);
+  font-weight: 500;
 }
 
 /* ── TOOL GRID ── */
@@ -317,8 +311,8 @@ nav {
 .tool-chip {
   padding: 0.55rem 0.7rem;
   border-radius: 9px;
-  border: 1px solid var(--border-med);
-  background: var(--surface2);
+  border: 1px solid var(--border);
+  background: var(--surface);
   font-family: 'DM Sans', sans-serif;
   font-size: 0.78rem;
   color: var(--muted2);
@@ -328,11 +322,12 @@ nav {
   user-select: none;
   display: flex; align-items: center; gap: 5px; justify-content: center;
 }
-.tool-chip:hover { border-color: var(--border-strong); color: var(--text); }
+.tool-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 .tool-chip.selected {
   border-color: var(--border-strong);
   background: var(--accent-dim);
   color: var(--accent);
+  font-weight: 500;
 }
 
 /* ── SCALE ── */
@@ -352,10 +347,10 @@ nav {
   text-align: center;
   user-select: none;
 }
-.scale-btn:hover { border-color: var(--border-strong); color: var(--text); }
+.scale-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 .scale-btn.selected { background: var(--accent-dim); border-color: var(--border-strong); color: var(--accent); }
 .scale-labels { display: flex; justify-content: space-between; margin-top: 4px; }
-.scale-labels span { font-size: 0.68rem; color: var(--muted2); }
+.scale-labels span { font-size: 0.68rem; color: var(--muted); }
 
 /* ── TWO COL ── */
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -388,8 +383,9 @@ nav {
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%) translateY(4px);
-  background: var(--surface3);
-  border: 1px solid var(--border-strong);
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
   border-radius: 10px;
   padding: 0.8rem 1rem;
   width: 260px;
@@ -408,7 +404,7 @@ nav {
   top: 100%; left: 50%;
   transform: translateX(-50%);
   border: 5px solid transparent;
-  border-top-color: var(--border-strong);
+  border-top-color: var(--border);
 }
 .tooltip-box strong { color: var(--text); font-weight: 500; display: block; margin-bottom: 4px; }
 
@@ -419,7 +415,7 @@ nav {
 }
 .submit-note {
   font-size: 0.75rem;
-  color: var(--muted2);
+  color: var(--muted);
   margin-bottom: 1.2rem;
   line-height: 1.55;
 }
@@ -428,7 +424,7 @@ nav {
   align-items: center;
   gap: 0.6rem;
   background: var(--accent);
-  color: #0c0e09;
+  color: #fff;
   border: none;
   padding: 0.95rem 2.4rem;
   border-radius: 100px;
@@ -454,7 +450,7 @@ nav {
 .spinner {
   display: inline-block;
   width: 16px; height: 16px;
-  border: 2px solid var(--border-med);
+  border: 2px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -478,13 +474,14 @@ nav {
   display: flex; align-items: center; justify-content: center;
   margin: 0 auto 1.5rem;
   font-size: 1.6rem;
+  color: var(--accent);
 }
 .success-screen h2 {
   font-family: 'Syne', sans-serif;
   font-size: 1.7rem;
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--white);
+  color: var(--text);
   margin-bottom: 0.8rem;
 }
 .success-screen p {
@@ -512,17 +509,18 @@ footer {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.5rem;
+  background: var(--surface);
 }
 .footer-copy { font-size: 0.75rem; color: var(--muted); }
 
 /* ── ERROR ── */
 .error-msg {
-  background: rgba(200,60,60,0.08);
+  background: rgba(200,60,60,0.06);
   border: 1px solid rgba(200,60,60,0.2);
   border-radius: 9px;
   padding: 0.7rem 1rem;
   font-size: 0.8rem;
-  color: #e07070;
+  color: #c0392b;
   display: none;
   margin-bottom: 1rem;
   text-align: center;
@@ -551,12 +549,12 @@ footer {
 <!-- NAV -->
 <nav>
   <a href="https://flow-desk-offer.netlify.app/" class="logo">Flow<span>Desk</span></a>
-  <div class="nav-badge">Pre-call dotazník</div>
+  <div class="nav-badge">DOTAZNÍK</div>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-eyebrow">Pred naším 30-minútovým hovorom</div>
+  <div class="hero-eyebrow">Pred naším 30-minútovým hovorom zdarma</div>
   <h1>Povedzte mi<br />o <em>vašom tíme.</em></h1>
   <p>Vyplnenie trvá 3–5 minút. Vďaka tomu môžeme na hovore rovno riešiť podstatu — bez zbytočného úvodu.</p>
 </div>
@@ -754,24 +752,6 @@ footer {
           <span>Chcem to čo najskôr</span>
         </div>
       </div>
-      <div class="field">
-        <label>Kto bude systém po odovzdaní spravovať?</label>
-        <div class="chips" id="admin-role">
-          <button type="button" class="chip" data-val="ja" onclick="selectChip(this,'admin-role')">Ja osobne</button>
-          <button type="button" class="chip" data-val="tech" onclick="selectChip(this,'admin-role')">Niekto z IT / tech tímu</button>
-          <button type="button" class="chip" data-val="ops" onclick="selectChip(this,'admin-role')">Operations / admin kolega</button>
-          <button type="button" class="chip" data-val="nikto" onclick="selectChip(this,'admin-role')">Nechcem to riešiť — má to bežať samo</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>Máte predstavu o rozpočte?</label>
-        <div class="chips" id="budget">
-          <button type="button" class="chip" data-val="do500" onclick="selectChip(this,'budget')">do €500</button>
-          <button type="button" class="chip" data-val="500-1000" onclick="selectChip(this,'budget')">€500–1 000</button>
-          <button type="button" class="chip" data-val="1000plus" onclick="selectChip(this,'budget')">€1 000+</button>
-          <button type="button" class="chip" data-val="neviem" onclick="selectChip(this,'budget')">Ešte neviem</button>
-        </div>
-      </div>
       <div class="field field-with-tooltip">
         <div class="tooltip-label">
           <label for="anything-else">Poznámky na hovor</label>
@@ -794,7 +774,7 @@ footer {
   <div class="submit-area">
     <p class="submit-note">Údaje používam výhradne na prípravu na náš hovor.<br/>Žiadny spam, žiadne tretie strany.</p>
     <button type="button" class="submit-btn" id="submit-btn" onclick="handleSubmit()">
-      Odoslať a tešiť sa na hovor
+      Odoslať nezáväzne
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
     <div class="loading-state" id="loading">
@@ -818,10 +798,7 @@ footer {
 </footer>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────
-// Sem vlož svoju Apps Script Web App URL po deploynutí:
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxpURJ5scOMc-Yf7ISTJhzjmKtYN905saplVber4-0JZ5Ji1ykwdmx4yMwSA9VXWrhU/exec';
-// ────────────────────────────────────────────────────────
 
 const chipSelections = {};
 const toolSelections = new Set();

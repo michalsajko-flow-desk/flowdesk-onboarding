@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23ffffff'/><text x='50' y='68' font-family='Georgia,serif' font-size='48' font-weight='bold' text-anchor='middle'><tspan fill='%231a1a1a'>f</tspan><tspan fill='%232D6A4F'>d</tspan></text></svg>">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -385,9 +384,15 @@ nav {
   text-align: left;
   border-bottom: 1px solid var(--border);
 }
-.calendly-inline-widget {
-  min-width: 300px;
+.calendly-iframe-wrap {
+  width: 100%;
   height: 680px;
+}
+.calendly-iframe-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
 }
 .booking-fallback {
   padding: 1.4rem;
@@ -403,7 +408,7 @@ nav {
   font-style: italic;
 }
 @media (max-width: 600px) {
-  .calendly-inline-widget { height: 780px; }
+  .calendly-iframe-wrap { height: 780px; }
 }
 
 /* ── FOOTER ── */
@@ -503,7 +508,7 @@ footer {
 
   <div class="booking-wrap">
     <div class="booking-label">Vyberte si termín — 30 minút, zadarmo</div>
-    <div class="calendly-inline-widget" id="calendly-embed" data-url=""></div>
+    <div class="calendly-iframe-wrap" id="calendly-embed"></div>
     <div class="booking-fallback" id="booking-fallback" style="display:none;">
       Kalendár sa nepodarilo načítať. Termín si môžete vybrať priamo tu:
       <a href="https://calendly.com/michal-sajko-wqni/30min" target="_blank" rel="noopener">calendly.com/michal-sajko-wqni/30min →</a>
@@ -599,33 +604,32 @@ function loadCalendly() {
   const params = new URLSearchParams({
     name: answers.name,
     email: answers.email,
-    hide_gdpr_banner: '1'
+    hide_gdpr_banner: '1',
+    hide_event_type_details: '0'
   });
   const prefillUrl = `${CALENDLY_URL}?${params.toString()}`;
+  const container = document.getElementById('calendly-embed');
 
-  function init() {
-    if (window.Calendly) {
-      window.Calendly.initInlineWidget({
-        url: prefillUrl,
-        parentElement: document.getElementById('calendly-embed'),
-        prefill: { name: answers.name, email: answers.email }
-      });
-    } else {
+  const iframe = document.createElement('iframe');
+  iframe.src = prefillUrl;
+  iframe.title = 'Vybrať termín hovoru — Calendly';
+  iframe.loading = 'lazy';
+
+  let loaded = false;
+  iframe.addEventListener('load', () => { loaded = true; });
+
+  // If nothing loads within a few seconds (blocked / offline), show fallback link
+  setTimeout(() => {
+    if (!loaded) {
       document.getElementById('booking-fallback').style.display = 'block';
     }
-  }
+  }, 6000);
 
-  if (window.Calendly) {
-    init();
-    return;
-  }
+  iframe.addEventListener('error', () => {
+    document.getElementById('booking-fallback').style.display = 'block';
+  });
 
-  const script = document.createElement('script');
-  script.src = 'https://assets.calendly.com/assets/external/widget.js';
-  script.async = true;
-  script.onload = init;
-  script.onerror = () => { document.getElementById('booking-fallback').style.display = 'block'; };
-  document.body.appendChild(script);
+  container.appendChild(iframe);
 }
 
 updateProgress();

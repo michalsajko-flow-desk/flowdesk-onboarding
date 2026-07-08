@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23ffffff'/><text x='50' y='68' font-family='Georgia,serif' font-size='48' font-weight='bold' text-anchor='middle'><tspan fill='%231a1a1a'>f</tspan><tspan fill='%232D6A4F'>d</tspan></text></svg>">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -334,38 +335,75 @@ nav {
   text-align: center;
   position: relative;
   z-index: 5;
-  padding: 2rem;
+  padding: 2.5rem 1.5rem 1rem;
+  max-width: 760px;
+  margin: 0 auto;
 }
 .success-icon {
-  width: 68px; height: 68px;
+  width: 56px; height: 56px;
   background: var(--accent-dim);
   border: 1.5px solid var(--border-strong);
-  border-radius: 20px;
+  border-radius: 18px;
   display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 1.6rem;
-  font-size: 1.8rem;
+  margin: 0 auto 1.3rem;
+  font-size: 1.5rem;
   color: var(--accent);
   animation: cardIn 0.5s cubic-bezier(.2,.8,.2,1);
 }
 .success-screen h2 {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(1.6rem, 4vw, 2.1rem);
+  font-size: clamp(1.4rem, 3.4vw, 1.9rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.6rem;
 }
-.success-screen p {
-  font-size: 0.92rem;
+.success-screen > p {
+  font-size: 0.9rem;
   color: var(--muted);
   line-height: 1.7;
-  max-width: 40ch;
+  max-width: 42ch;
   margin: 0 auto;
 }
+
+/* ── CALENDLY EMBED ── */
+.booking-wrap {
+  margin-top: 2.2rem;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--white);
+  box-shadow: 0 12px 40px rgba(45,106,79,0.06);
+}
+.booking-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 0.7rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.calendly-inline-widget {
+  min-width: 300px;
+  height: 680px;
+}
+.booking-fallback {
+  padding: 1.4rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.booking-fallback a { color: var(--accent); font-weight: 500; }
+
 .success-name {
-  margin-top: 2rem;
+  margin-top: 1.8rem;
   font-size: 0.8rem;
   color: var(--muted);
   font-style: italic;
+}
+@media (max-width: 600px) {
+  .calendly-inline-widget { height: 780px; }
 }
 
 /* ── FOOTER ── */
@@ -460,8 +498,18 @@ footer {
 <!-- SUCCESS -->
 <div class="success-screen" id="success-screen">
   <div class="success-icon">✓</div>
-  <h2>Hotovo! Ozvem sa vám čoskoro.</h2>
-  <p>Prečítam si to ešte pred hovorom a prídem pripravený.</p>
+  <h2>Hotovo! Už len vyberte termín.</h2>
+  <p>Odpovede mám uložené a prečítam si ich pred hovorom. Zostáva posledný krok — vybrať si čas, ktorý vám vyhovuje.</p>
+
+  <div class="booking-wrap">
+    <div class="booking-label">Vyberte si termín — 30 minút, zadarmo</div>
+    <div class="calendly-inline-widget" id="calendly-embed" data-url=""></div>
+    <div class="booking-fallback" id="booking-fallback" style="display:none;">
+      Kalendár sa nepodarilo načítať. Termín si môžete vybrať priamo tu:
+      <a href="https://calendly.com/michal-sajko-wqni/30min" target="_blank" rel="noopener">calendly.com/michal-sajko-wqni/30min →</a>
+    </div>
+  </div>
+
   <p class="success-name">— Michal Sajko, FlowDesk</p>
 </div>
 
@@ -518,6 +566,8 @@ function wireChips(containerId, key, nextStep) {
 wireChips('team-size', 'teamSize', 3);
 wireChips('pain-point', 'painPoint', 4);
 
+const CALENDLY_URL = 'https://calendly.com/michal-sajko-wqni/30min';
+
 async function handleSubmit() {
   answers.name = nameEl.value.trim();
   answers.email = emailEl.value.trim();
@@ -541,6 +591,41 @@ async function handleSubmit() {
   document.getElementById('success-screen').style.display = 'block';
   document.getElementById('progress').style.width = '100%';
   window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  loadCalendly();
+}
+
+function loadCalendly() {
+  const params = new URLSearchParams({
+    name: answers.name,
+    email: answers.email,
+    hide_gdpr_banner: '1'
+  });
+  const prefillUrl = `${CALENDLY_URL}?${params.toString()}`;
+
+  function init() {
+    if (window.Calendly) {
+      window.Calendly.initInlineWidget({
+        url: prefillUrl,
+        parentElement: document.getElementById('calendly-embed'),
+        prefill: { name: answers.name, email: answers.email }
+      });
+    } else {
+      document.getElementById('booking-fallback').style.display = 'block';
+    }
+  }
+
+  if (window.Calendly) {
+    init();
+    return;
+  }
+
+  const script = document.createElement('script');
+  script.src = 'https://assets.calendly.com/assets/external/widget.js';
+  script.async = true;
+  script.onload = init;
+  script.onerror = () => { document.getElementById('booking-fallback').style.display = 'block'; };
+  document.body.appendChild(script);
 }
 
 updateProgress();

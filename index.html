@@ -6,53 +6,75 @@
 <title>FlowDesk — Pred naším hovorom</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23ffffff'/><text x='50' y='68' font-family='Georgia,serif' font-size='48' font-weight='bold' text-anchor='middle'><tspan fill='%231a1a1a'>f</tspan><tspan fill='%232D6A4F'>d</tspan></text></svg>">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #ffffff;
-  --surface: #f7f8f9;
-  --surface2: #f0f2f4;
-  --surface3: #e8eaed;
-  --border: #e8eaed;
-  --border-med: #d4d8dd;
-  --border-strong: rgba(45,106,79,0.35);
+  --bg: #fffdf9;
   --accent: #2d6a4f;
   --accent-hover: #235840;
   --accent-dim: rgba(45,106,79,0.08);
   --accent-dim2: rgba(45,106,79,0.04);
-  --text: #0f1117;
-  --muted: #9ca3af;
-  --muted2: #6b7280;
+  --border: #eae6dd;
+  --border-strong: rgba(45,106,79,0.35);
+  --text: #14201a;
+  --muted: #9a9284;
   --white: #ffffff;
 }
 
-html { scroll-behavior: smooth; }
+html, body { height: 100%; }
 
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
+  font-weight: 400;
   overflow-x: hidden;
+  position: relative;
   min-height: 100vh;
+}
+
+/* ── AMBIENT BLOB ── */
+.blob {
+  position: fixed;
+  width: 640px; height: 640px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(45,106,79,0.10) 0%, rgba(45,106,79,0.03) 45%, transparent 72%);
+  top: -220px; right: -220px;
+  pointer-events: none;
+  z-index: 0;
+  animation: drift 14s ease-in-out infinite;
+}
+.blob2 {
+  position: fixed;
+  width: 480px; height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(45,106,79,0.07) 0%, transparent 70%);
+  bottom: -200px; left: -160px;
+  pointer-events: none;
+  z-index: 0;
+  animation: drift 18s ease-in-out infinite reverse;
+}
+@keyframes drift {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(-30px, 30px) scale(1.08); }
 }
 
 /* ── PROGRESS ── */
 .progress-wrap {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 2px;
+  height: 3px;
   background: var(--border);
   z-index: 200;
 }
 .progress-bar {
   height: 100%;
   background: var(--accent);
-  width: 0%;
-  transition: width 0.4s ease;
+  width: 8%;
+  transition: width 0.5s cubic-bezier(.65,0,.35,1);
 }
 
 /* ── NAV ── */
@@ -62,431 +84,279 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.3rem 3rem;
-  border-bottom: 1px solid var(--border);
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(16px);
+  padding: 1.3rem 2rem;
 }
-
 .logo {
   font-family: 'Syne', sans-serif;
   font-weight: 800;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   letter-spacing: -0.02em;
   color: var(--text);
   text-decoration: none;
 }
 .logo span { color: var(--accent); }
-
-.nav-badge {
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent);
-  background: var(--accent-dim);
-  border: 1px solid var(--border-strong);
-  border-radius: 100px;
-  padding: 0.3rem 0.9rem;
+.step-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
 }
+.step-count strong { color: var(--accent); }
 
-/* ── HERO ── */
-.hero {
+/* ── STAGE ── */
+.stage {
   position: relative;
   z-index: 5;
-  max-width: 660px;
-  margin: 0 auto;
-  padding: 4.5rem 2rem 2.5rem;
-  text-align: center;
+  min-height: calc(100vh - 64px - 70px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
 }
 
-.hero-eyebrow {
+.card {
+  width: 100%;
+  max-width: 560px;
+  display: none;
+}
+.card.active {
+  display: block;
+  animation: cardIn 0.5s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  font-family: 'DM Mono', monospace;
   font-size: 0.7rem;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
   background: var(--accent-dim);
   border: 1px solid var(--border-strong);
   border-radius: 100px;
-  padding: 0.35rem 1rem;
-  margin-bottom: 1.6rem;
+  padding: 0.3rem 0.85rem;
+  margin-bottom: 1.4rem;
 }
-.hero-eyebrow::before {
+.eyebrow::before {
   content: '';
   width: 6px; height: 6px;
   background: var(--accent);
   border-radius: 50%;
-  animation: blink 2s infinite;
 }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
 
-.hero h1 {
+.card h1 {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(1.9rem, 5vw, 2.7rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.06;
-  color: var(--text);
-  margin-bottom: 1rem;
+  line-height: 1.1;
+  margin-bottom: 0.6rem;
 }
-.hero h1 em {
-  font-style: normal;
-  color: var(--accent);
-}
+.card h1 em { font-style: normal; color: var(--accent); }
 
-.hero p {
-  font-size: 0.95rem;
-  color: var(--muted2);
-  line-height: 1.7;
-  max-width: 44ch;
-  margin: 0 auto;
-}
-
-/* ── CALL META ── */
-.call-meta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.8rem;
-  flex-wrap: wrap;
-  padding: 1rem 1.5rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  margin: 2rem 2rem 3.5rem;
-  max-width: 660px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.call-meta-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
-  color: var(--muted2);
-}
-.call-meta-item svg { color: var(--accent); }
-.call-meta-item strong { color: var(--text); font-weight: 500; }
-.call-sep { width: 1px; height: 16px; background: var(--border-med); }
-
-/* ── FORM WRAP ── */
-.form-wrap {
-  position: relative;
-  z-index: 5;
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 0 1.5rem 5rem;
-}
-
-/* ── SECTION ── */
-.form-section {
-  margin-bottom: 1.8rem;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-.form-section:focus-within {
-  border-color: var(--border-strong);
-  box-shadow: 0 4px 24px rgba(45,106,79,0.06);
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding: 1.2rem 1.6rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-.section-num {
-  width: 26px; height: 26px;
-  background: var(--white);
-  border: 1px solid var(--border-strong);
-  border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--accent);
-  flex-shrink: 0;
-}
-.section-title {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
+.card .sub {
   font-size: 0.92rem;
-  color: var(--text);
-}
-.section-desc {
-  font-size: 0.75rem;
-  color: var(--muted2);
-  margin-top: 1px;
-}
-
-.section-body {
-  padding: 1.6rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.3rem;
-}
-
-/* ── FIELD ── */
-.field label {
-  display: block;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 0.45rem;
-}
-.hint {
-  display: block;
-  font-size: 0.72rem;
   color: var(--muted);
-  margin-top: 0.35rem;
-  line-height: 1.5;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 46ch;
 }
 
-.field input[type="text"],
-.field input[type="email"],
-.field textarea,
-.field select {
+/* ── DUO INPUT (name/email step) ── */
+.duo { display: flex; flex-direction: column; gap: 0.9rem; margin-bottom: 1.6rem; }
+.big-input {
   width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 9px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--border);
   color: var(--text);
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.875rem;
-  font-weight: 300;
-  padding: 0.7rem 0.95rem;
+  font-size: 1.35rem;
+  font-weight: 500;
+  padding: 0.5rem 0.1rem;
   outline: none;
-  transition: border-color 0.2s, background 0.2s;
-  -webkit-appearance: none;
+  transition: border-color 0.25s;
 }
-.field input::placeholder,
-.field textarea::placeholder { color: var(--muted); }
+.big-input::placeholder { color: #c9c2b4; font-weight: 400; }
+.big-input:focus { border-color: var(--accent); }
 
-.field input:focus,
-.field textarea:focus,
-.field select:focus {
-  border-color: var(--border-strong);
-  background: var(--white);
-}
-.field textarea { resize: vertical; min-height: 88px; line-height: 1.6; }
-.field select option { background: var(--white); }
-
-/* ── CHIPS ── */
-.chips { display: flex; flex-wrap: wrap; gap: 7px; }
-.chip {
-  padding: 0.42rem 0.85rem;
-  border-radius: 100px;
-  border: 1px solid var(--border-med);
-  background: transparent;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 400;
-  color: var(--muted2);
-  cursor: pointer;
-  transition: all 0.15s;
-  user-select: none;
-  -webkit-appearance: none;
-}
-.chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-.chip.selected {
-  border-color: var(--border-strong);
-  background: var(--accent-dim);
-  color: var(--accent);
-  font-weight: 500;
-}
-
-/* ── TOOL GRID ── */
-.tool-grid {
+/* ── CHIP GRID ── */
+.opt-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 7px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 1.6rem;
 }
-.tool-chip {
-  padding: 0.55rem 0.7rem;
-  border-radius: 9px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.78rem;
-  color: var(--muted2);
-  cursor: pointer;
-  transition: all 0.15s;
-  text-align: center;
-  user-select: none;
-  display: flex; align-items: center; gap: 5px; justify-content: center;
-}
-.tool-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-.tool-chip.selected {
-  border-color: var(--border-strong);
-  background: var(--accent-dim);
-  color: var(--accent);
-  font-weight: 500;
-}
+.opt-grid.single-col { grid-template-columns: 1fr; }
 
-/* ── SCALE ── */
-.scale-row { display: flex; gap: 6px; }
-.scale-btn {
-  flex: 1;
-  padding: 0.55rem 0.3rem;
-  border-radius: 8px;
-  border: 1px solid var(--border-med);
-  background: transparent;
-  font-family: 'Syne', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--muted2);
-  cursor: pointer;
-  transition: all 0.15s;
-  text-align: center;
-  user-select: none;
-}
-.scale-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-.scale-btn.selected { background: var(--accent-dim); border-color: var(--border-strong); color: var(--accent); }
-.scale-labels { display: flex; justify-content: space-between; margin-top: 4px; }
-.scale-labels span { font-size: 0.68rem; color: var(--muted); }
-
-/* ── TWO COL ── */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
-/* ── TOOLTIP FIELD ── */
-.field-with-tooltip { position: relative; }
-.tooltip-label {
+.opt {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  margin-bottom: 0.45rem;
-}
-.tooltip-label label { font-size: 0.8rem; font-weight: 500; color: var(--text); }
-.tooltip-icon {
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  border: 1px solid var(--border-strong);
-  background: var(--accent-dim);
-  color: var(--accent);
-  font-size: 0.65rem;
-  font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  cursor: default;
-  flex-shrink: 0;
-  position: relative;
-}
-.tooltip-icon:hover .tooltip-box { opacity: 1; pointer-events: auto; transform: translateY(0); }
-.tooltip-box {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
+  gap: 0.7rem;
+  padding: 1rem 1.15rem;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
   background: var(--white);
-  border: 1px solid var(--border);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  border-radius: 10px;
-  padding: 0.8rem 1rem;
-  width: 260px;
-  font-size: 0.76rem;
-  color: var(--muted2);
-  line-height: 1.55;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s, transform 0.2s;
-  z-index: 50;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.18s, background 0.18s, transform 0.12s;
   text-align: left;
 }
-.tooltip-box::after {
-  content: '';
-  position: absolute;
-  top: 100%; left: 50%;
-  transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-top-color: var(--border);
+.opt .emo { font-size: 1.15rem; flex-shrink: 0; }
+.opt:hover { border-color: var(--accent); background: var(--accent-dim2); transform: translateY(-1px); }
+.opt.selected {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  box-shadow: 0 0 0 1px var(--accent);
 }
-.tooltip-box strong { color: var(--text); font-weight: 500; display: block; margin-bottom: 4px; }
+.opt.pulse { animation: pop 0.32s ease; }
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
 
-/* ── SUBMIT ── */
-.submit-area {
-  text-align: center;
-  padding: 0 1.5rem 1.5rem;
+/* ── TEXTAREA STEP ── */
+.big-textarea {
+  width: 100%;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  padding: 1rem 1.1rem;
+  min-height: 120px;
+  line-height: 1.6;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s;
+  margin-bottom: 1.6rem;
 }
-.submit-note {
-  font-size: 0.75rem;
-  color: var(--muted);
-  margin-bottom: 1.2rem;
-  line-height: 1.55;
+.big-textarea::placeholder { color: #c9c2b4; }
+.big-textarea:focus { border-color: var(--accent); }
+
+/* ── NAV ROW ── */
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
-.submit-btn {
+.btn-continue {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.55rem;
   background: var(--accent);
   color: #fff;
   border: none;
-  padding: 0.95rem 2.4rem;
+  padding: 0.85rem 1.7rem;
   border-radius: 100px;
   font-family: 'DM Sans', sans-serif;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
+  transition: background 0.2s, transform 0.15s, opacity 0.2s;
 }
-.submit-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
-.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-continue:hover { background: var(--accent-hover); transform: translateY(-1px); }
+.btn-continue:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+.btn-skip {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+.btn-skip:hover { color: var(--text); }
+
+.btn-back {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-family: 'DM Mono', monospace;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  transition: color 0.2s;
+}
+.btn-back:hover { color: var(--accent); }
+
+.hint-key {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.9rem;
+}
+.hint-key kbd {
+  background: var(--accent-dim);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  color: var(--accent);
+  font-family: 'DM Mono', monospace;
+}
 
 /* ── LOADING ── */
 .loading-state {
   display: none;
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.82rem;
-  color: var(--muted2);
-  letter-spacing: 0.05em;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinner {
-  display: inline-block;
-  width: 16px; height: 16px;
+  width: 15px; height: 15px;
   border: 2px solid var(--border);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
-  vertical-align: middle;
-  margin-right: 6px;
 }
 
 /* ── SUCCESS ── */
 .success-screen {
   display: none;
   text-align: center;
-  padding: 6rem 2rem;
   position: relative;
   z-index: 5;
+  padding: 2rem;
 }
 .success-icon {
-  width: 60px; height: 60px;
+  width: 68px; height: 68px;
   background: var(--accent-dim);
-  border: 1px solid var(--border-strong);
-  border-radius: 16px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 20px;
   display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 1.5rem;
-  font-size: 1.6rem;
+  margin: 0 auto 1.6rem;
+  font-size: 1.8rem;
   color: var(--accent);
+  animation: cardIn 0.5s cubic-bezier(.2,.8,.2,1);
 }
 .success-screen h2 {
   font-family: 'Syne', sans-serif;
-  font-size: 1.7rem;
+  font-size: clamp(1.6rem, 4vw, 2.1rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--text);
   margin-bottom: 0.8rem;
 }
 .success-screen p {
   font-size: 0.92rem;
-  color: var(--muted2);
+  color: var(--muted);
   line-height: 1.7;
   max-width: 40ch;
   margin: 0 auto;
@@ -502,389 +372,178 @@ nav {
 footer {
   position: relative;
   z-index: 5;
-  border-top: 1px solid var(--border);
-  padding: 1.4rem 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  background: var(--surface);
-}
-.footer-copy { font-size: 0.75rem; color: var(--muted); }
-
-/* ── ERROR ── */
-.error-msg {
-  background: rgba(200,60,60,0.06);
-  border: 1px solid rgba(200,60,60,0.2);
-  border-radius: 9px;
-  padding: 0.7rem 1rem;
-  font-size: 0.8rem;
-  color: #c0392b;
-  display: none;
-  margin-bottom: 1rem;
+  padding: 1.2rem 2rem;
   text-align: center;
 }
+.footer-copy { font-size: 0.72rem; color: var(--muted); }
 
-/* ── RESPONSIVE ── */
 @media (max-width: 600px) {
-  nav { padding: 1.1rem 1.5rem; }
-  .hero { padding: 3rem 1.5rem 2rem; }
-  .call-meta { margin: 1.5rem 1.5rem 2.5rem; gap: 0.8rem; }
-  .call-sep { display: none; }
-  .form-wrap { padding: 0 1rem 4rem; }
-  .section-body { padding: 1.2rem; }
-  .two-col { grid-template-columns: 1fr; }
-  footer { padding: 1.2rem 1.5rem; }
-  .submit-area { padding: 0 1rem 1.5rem; }
-  .tooltip-box { width: 220px; left: 0; transform: translateX(0) translateY(4px); }
-  .tooltip-icon:hover .tooltip-box { transform: translateX(0) translateY(0); }
+  nav { padding: 1.1rem 1.4rem; }
+  .stage { padding: 1.5rem 1.2rem; }
+  .opt-grid { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
 <body>
 
+<div class="blob"></div>
+<div class="blob2"></div>
 <div class="progress-wrap"><div class="progress-bar" id="progress"></div></div>
 
-<!-- NAV -->
 <nav>
   <a href="https://flow-desk-offer.netlify.app/" class="logo">Flow<span>Desk</span></a>
-  <div class="nav-badge">DOTAZNÍK</div>
+  <div class="step-count" id="step-count">Otázka <strong>1</strong>/4</div>
 </nav>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-eyebrow">Pred naším 30-minútovým hovorom zdarma</div>
-  <h1>Povedzte mi<br />o <em>vašom tíme.</em></h1>
-  <p>Vyplnenie trvá 3–5 minút. Vďaka tomu môžeme na hovore rovno riešiť podstatu — bez zbytočného úvodu.</p>
-</div>
+<div class="stage" id="stage">
 
-<!-- CALL META -->
-<div class="call-meta">
-  <div class="call-meta-item">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    <span><strong>3–5 min</strong> vyplnenie</span>
-  </div>
-  <div class="call-sep"></div>
-  <div class="call-meta-item">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    <span><strong>Súkromné</strong> — len pre mňa</span>
-  </div>
-  <div class="call-sep"></div>
-  <div class="call-meta-item">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="20 6 9 17 4 12"/></svg>
-    <span>Hovor bude <strong>efektívnejší</strong></span>
-  </div>
-</div>
-
-<!-- FORM -->
-<div class="form-wrap" id="form-container">
-
-  <!-- SEKCIA 1 -->
-  <div class="form-section">
-    <div class="section-header">
-      <div class="section-num">01</div>
-      <div>
-        <div class="section-title">Základné informácie</div>
-        <div class="section-desc">O vás a vašej firme</div>
-      </div>
+  <!-- STEP 1: name + email -->
+  <div class="card active" data-step="1">
+    <div class="eyebrow">30 sekúnd, sľubujem</div>
+    <h1>Ahoj! Kto sa<br/><em>nám ozýva?</em></h1>
+    <p class="sub">Toto je jediné písanie, ktoré vás čaká. Zvyšok už len klikáte.</p>
+    <div class="duo">
+      <input type="text" class="big-input" id="name" placeholder="Vaše meno" autocomplete="name" />
+      <input type="email" class="big-input" id="email" placeholder="vas@email.sk" autocomplete="email" />
     </div>
-    <div class="section-body">
-      <div class="two-col">
-        <div class="field">
-          <label for="name">Vaše meno *</label>
-          <input type="text" id="name" placeholder="Ján Novák" />
-        </div>
-        <div class="field">
-          <label for="email">Email *</label>
-          <input type="email" id="email" placeholder="jan@firma.sk" />
-        </div>
-      </div>
-      <div class="field">
-        <label>Veľkosť tímu *</label>
-        <div class="chips" id="team-size">
-          <button type="button" class="chip" data-val="1-5" onclick="selectChip(this,'team-size')">1–5 ľudí</button>
-          <button type="button" class="chip" data-val="6-15" onclick="selectChip(this,'team-size')">6–15 ľudí</button>
-          <button type="button" class="chip" data-val="16-30" onclick="selectChip(this,'team-size')">16–30 ľudí</button>
-          <button type="button" class="chip" data-val="31-50" onclick="selectChip(this,'team-size')">31–50 ľudí</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>Odvetvie / typ firmy</label>
-        <div class="chips" id="industry">
-          <button type="button" class="chip" data-val="ecommerce" onclick="selectChip(this,'industry')">E-commerce</button>
-          <button type="button" class="chip" data-val="agencia" onclick="selectChip(this,'industry')">Agentúra / štúdio</button>
-          <button type="button" class="chip" data-val="saas" onclick="selectChip(this,'industry')">SaaS / Tech</button>
-          <button type="button" class="chip" data-val="logistika" onclick="selectChip(this,'industry')">Logistika</button>
-          <button type="button" class="chip" data-val="sluzby" onclick="selectChip(this,'industry')">Profesionálne služby</button>
-          <button type="button" class="chip" data-val="ine" onclick="selectChip(this,'industry')">Iné</button>
-        </div>
-      </div>
+    <div class="row-actions">
+      <button type="button" class="btn-continue" id="btn-1" onclick="goTo(2)" disabled>Ďalej →</button>
     </div>
+    <div class="hint-key">Stlač <kbd>Enter ↵</kbd> pre pokračovanie</div>
   </div>
 
-
-  <!-- SEKCIA 2 -->
-  <div class="form-section">
-    <div class="section-header">
-      <div class="section-num">02</div>
-      <div>
-        <div class="section-title">Aktuálny spôsob práce</div>
-        <div class="section-desc">Ako dnes riadite úlohy a požiadavky</div>
-      </div>
+  <!-- STEP 2: team size -->
+  <div class="card" data-step="2">
+    <div class="eyebrow">Otázka 1 z 3</div>
+    <h1>Koľko vás<br/><em>je v tíme?</em></h1>
+    <p class="sub">Stačí kliknúť — automaticky pokračujeme ďalej.</p>
+    <div class="opt-grid" id="team-size">
+      <button type="button" class="opt" data-val="1-5"><span class="emo">🌱</span> 1–5 ľudí</button>
+      <button type="button" class="opt" data-val="6-15"><span class="emo">🌿</span> 6–15 ľudí</button>
+      <button type="button" class="opt" data-val="16-30"><span class="emo">🌳</span> 16–30 ľudí</button>
+      <button type="button" class="opt" data-val="31-50"><span class="emo">🌲</span> 31–50 ľudí</button>
     </div>
-    <div class="section-body">
-      <div class="field">
-        <label>Nástroje, ktoré momentálne používate</label>
-        <div class="tool-grid" id="current-tools">
-          <button type="button" class="tool-chip" data-val="email" onclick="toggleTool(this)">📧 Email</button>
-          <button type="button" class="tool-chip" data-val="whatsapp" onclick="toggleTool(this)">💬 WhatsApp</button>
-          <button type="button" class="tool-chip" data-val="excel" onclick="toggleTool(this)">📊 Excel/Sheets</button>
-          <button type="button" class="tool-chip" data-val="trello" onclick="toggleTool(this)">🗂 Trello</button>
-          <button type="button" class="tool-chip" data-val="jira" onclick="toggleTool(this)">🔷 Jira</button>
-          <button type="button" class="tool-chip" data-val="notion" onclick="toggleTool(this)">⬜ Notion</button>
-          <button type="button" class="tool-chip" data-val="slack" onclick="toggleTool(this)">⚡ Slack</button>
-          <button type="button" class="tool-chip" data-val="teams" onclick="toggleTool(this)">🟦 MS Teams</button>
-          <button type="button" class="tool-chip" data-val="asana" onclick="toggleTool(this)">🔴 Asana</button>
-          <button type="button" class="tool-chip" data-val="nic" onclick="toggleTool(this)">🤷 Nič / ad hoc</button>
-        </div>
-        <span class="hint">Môžete vybrať viac možností.</span>
-      </div>
-      <div class="field">
-        <label for="current-flow">Opíšte, ako dnes vyzerá typická požiadavka alebo úloha *</label>
-        <textarea id="current-flow" placeholder="Napr.: Zákazník nám napíše email → niekto to prepíše do Sheets → manažér si to všimne na porade → riešime..."></textarea>
-        <span class="hint">Nemusí byť dokonalé — stačí pár viet. Chcem pochopiť, ako to aktuálne funguje.</span>
-      </div>
-      <div class="field">
-        <label>Kde je dnes najväčší problém?</label>
-        <div class="chips" id="pain-points" style="flex-direction:column;align-items:flex-start;">
-          <button type="button" class="chip" data-val="chaos" onclick="toggleChip(this)">Veci sa strácajú / zabúdajú</button>
-          <button type="button" class="chip" data-val="notif" onclick="toggleChip(this)">Nikto nevie, čo sa deje — chýbajú notifikácie</button>
-          <button type="button" class="chip" data-val="reporting" onclick="toggleChip(this)">Nevieme vyreportovať, koľko sme toho vyriešili</button>
-          <button type="button" class="chip" data-val="rucne" onclick="toggleChip(this)">Príliš veľa manuálnej práce / kopírovania</button>
-          <button type="button" class="chip" data-val="sla" onclick="toggleChip(this)">Nedodržiavame termíny / SLA</button>
-          <button type="button" class="chip" data-val="externi" onclick="toggleChip(this)">Problémy s externými partnermi / klientami</button>
-        </div>
-        <span class="hint" style="margin-top:8px">Môžete vybrať viac.</span>
-      </div>
-    </div>
+    <button type="button" class="btn-back" onclick="goTo(1)">← späť</button>
   </div>
 
-  <!-- SEKCIA 3 -->
-  <div class="form-section">
-    <div class="section-header">
-      <div class="section-num">03</div>
-      <div>
-        <div class="section-title">Čo chcete dosiahnuť</div>
-        <div class="section-desc">Vaše ciele a predstavy</div>
-      </div>
+  <!-- STEP 3: pain point -->
+  <div class="card" data-step="3">
+    <div class="eyebrow">Otázka 2 z 3</div>
+    <h1>Čo vás dnes<br/><em>najviac štve?</em></h1>
+    <p class="sub">Vyberte to, čo bolí najviac. Jeden klik stačí.</p>
+    <div class="opt-grid single-col" id="pain-point">
+      <button type="button" class="opt" data-val="chaos"><span class="emo">😵‍💫</span> Veci sa strácajú a zabúdajú</button>
+      <button type="button" class="opt" data-val="notif"><span class="emo">🔕</span> Nikto nevie, čo sa deje</button>
+      <button type="button" class="opt" data-val="reporting"><span class="emo">📉</span> Nevieme povedať, čo sme vyriešili</button>
+      <button type="button" class="opt" data-val="rucne"><span class="emo">✍️</span> Priveľa manuálneho kopírovania</button>
+      <button type="button" class="opt" data-val="sla"><span class="emo">⏰</span> Meškáme s termínmi / SLA</button>
     </div>
-    <div class="section-body">
-      <div class="field">
-        <label>Aký typ systému vás zaujíma?</label>
-        <div class="chips" id="use-case">
-          <button type="button" class="chip" data-val="incident" onclick="toggleChip(this)">Incident management</button>
-          <button type="button" class="chip" data-val="sla-track" onclick="toggleChip(this)">SLA tracking</button>
-          <button type="button" class="chip" data-val="task-report" onclick="toggleChip(this)">Reportovanie úloh</button>
-          <button type="button" class="chip" data-val="poziadavky" onclick="toggleChip(this)">Správa požiadaviek od klientov</button>
-          <button type="button" class="chip" data-val="onboarding" onclick="toggleChip(this)">Onboarding nových ľudí</button>
-          <button type="button" class="chip" data-val="neviem" onclick="selectChip(this,'use-case')">Neviem presne — chcem poradiť</button>
-        </div>
-      </div>
-      <div class="field">
-        <label for="goal">Čo by bol pre vás ideálny výsledok? *</label>
-        <textarea id="goal" placeholder="Napr.: Chcem, aby zákazníci mohli nahlasovať problémy cez formulár a my dostali notifikáciu na Slack. Každý tiket by mal mať zodpovedného člena tímu..."></textarea>
-        <span class="hint">Aj rámcová predstava stačí — upresnime to spolu na hovore.</span>
-      </div>
-      <div class="field">
-        <label>Preferovaný notifikačný kanál</label>
-        <div class="chips" id="notif-channel">
-          <button type="button" class="chip" data-val="slack" onclick="selectChip(this,'notif-channel')">Slack</button>
-          <button type="button" class="chip" data-val="teams" onclick="selectChip(this,'notif-channel')">MS Teams</button>
-          <button type="button" class="chip" data-val="email" onclick="selectChip(this,'notif-channel')">Email</button>
-          <button type="button" class="chip" data-val="gchat" onclick="selectChip(this,'notif-channel')">Google Chat</button>
-          <button type="button" class="chip" data-val="neviem" onclick="selectChip(this,'notif-channel')">Neviem / je mi to jedno</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>Preferovaný task management nástroj</label>
-        <div class="chips" id="task-tool">
-          <button type="button" class="chip" data-val="trello" onclick="selectChip(this,'task-tool')">Trello</button>
-          <button type="button" class="chip" data-val="jira" onclick="selectChip(this,'task-tool')">Jira</button>
-          <button type="button" class="chip" data-val="excel" onclick="selectChip(this,'task-tool')">Excel / Sheets</button>
-          <button type="button" class="chip" data-val="notion" onclick="selectChip(this,'task-tool')">Notion</button>
-          <button type="button" class="chip" data-val="neviem" onclick="selectChip(this,'task-tool')">Neviem / poraďte</button>
-        </div>
-      </div>
-    </div>
+    <button type="button" class="btn-back" onclick="goTo(2)">← späť</button>
   </div>
 
-  <!-- SEKCIA 4 -->
-  <div class="form-section">
-    <div class="section-header">
-      <div class="section-num">04</div>
-      <div>
-        <div class="section-title">Praktický kontext</div>
-        <div class="section-desc">Pár detailov pre lepšiu prípravu</div>
-      </div>
+  <!-- STEP 4: optional note -->
+  <div class="card" data-step="4">
+    <div class="eyebrow">Posledná otázka</div>
+    <h1>Chcete niečo<br/><em>doplniť?</em></h1>
+    <p class="sub">Voliteľné — ale pomôže mi prísť na hovor pripravený.</p>
+    <textarea class="big-textarea" id="note" placeholder="Napr. konkrétny prípad, otázka na cenu, nástroj ktorý používate…"></textarea>
+    <div class="row-actions">
+      <button type="button" class="btn-continue" onclick="handleSubmit()">Odoslať 🚀</button>
+      <button type="button" class="btn-skip" onclick="handleSubmit()">Preskočiť a odoslať</button>
     </div>
-    <div class="section-body">
-      <div class="field">
-        <label>Urgentnosť riešenia</label>
-        <div class="scale-row" id="urgency">
-          <button type="button" class="scale-btn" data-val="1" onclick="selectScale(this,'urgency')">1</button>
-          <button type="button" class="scale-btn" data-val="2" onclick="selectScale(this,'urgency')">2</button>
-          <button type="button" class="scale-btn" data-val="3" onclick="selectScale(this,'urgency')">3</button>
-          <button type="button" class="scale-btn" data-val="4" onclick="selectScale(this,'urgency')">4</button>
-          <button type="button" class="scale-btn" data-val="5" onclick="selectScale(this,'urgency')">5</button>
-        </div>
-        <div class="scale-labels">
-          <span>Len skúmam možnosti</span>
-          <span>Chcem to čo najskôr</span>
-        </div>
-      </div>
-      <div class="field field-with-tooltip">
-        <div class="tooltip-label">
-          <label for="anything-else">Poznámky na hovor</label>
-          <div class="tooltip-icon">
-            ?
-            <div class="tooltip-box">
-              <strong>Na čo je toto pole?</strong>
-              Napíšte si sem veci, ktoré chcete na hovore určite spomenúť — aby sa nezabudli. Napríklad konkrétny problém, otázka na cenu, situácia od zákazníka, alebo čokoľvek iné čo vám leží na srdci.
-            </div>
-          </div>
-        </div>
-        <textarea id="anything-else" placeholder="Napr.: Chcem sa opýtať na možnosť napojenia na náš existujúci Jira... alebo mám konkrétny prípad ktorý by som rád ukázal..."></textarea>
-        <span class="hint">Pole je nepovinné — ale pomôže, aby sme na hovore na nič nezabudli.</span>
-      </div>
-    </div>
+    <div class="loading-state" id="loading"><span class="spinner"></span> Odosielam...</div>
+    <button type="button" class="btn-back" onclick="goTo(3)" style="margin-top:1rem;">← späť</button>
   </div>
 
-  <div class="error-msg" id="error-msg">Prosím vyplňte povinné polia: meno, email, firma, popis aktuálneho flow a cieľ.</div>
-
-  <div class="submit-area">
-    <p class="submit-note">Údaje používam výhradne na prípravu na náš hovor.<br/>Žiadny spam, žiadne tretie strany.</p>
-    <button type="button" class="submit-btn" id="submit-btn" onclick="handleSubmit()">
-      Odoslať nezáväzne
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </button>
-    <div class="loading-state" id="loading">
-      <span class="spinner"></span> Odosielam...
-    </div>
-  </div>
 </div>
 
 <!-- SUCCESS -->
 <div class="success-screen" id="success-screen">
   <div class="success-icon">✓</div>
-  <h2>Ďakujem! Formulár odoslaný. Budem Vás kontaktovať.</h2>
+  <h2>Hotovo! Ozvem sa vám čoskoro.</h2>
   <p>Prečítam si to ešte pred hovorom a prídem pripravený.</p>
   <p class="success-name">— Michal Sajko, FlowDesk</p>
 </div>
 
-<!-- FOOTER -->
 <footer>
-  <span class="footer-copy">© 2026 FlowDesk · Michal Sajko</span>
-  <span class="footer-copy">Dôverné — len pre prípravu na hovor</span>
+  <span class="footer-copy">© 2026 FlowDesk · Michal Sajko · Dôverné, len pre prípravu na hovor</span>
 </footer>
 
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxpURJ5scOMc-Yf7ISTJhzjmKtYN905saplVber4-0JZ5Ji1ykwdmx4yMwSA9VXWrhU/exec';
 
-const chipSelections = {};
-const toolSelections = new Set();
-const scaleSelections = {};
-
-function selectChip(el, groupId) {
-  document.getElementById(groupId).querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  chipSelections[groupId] = el.dataset.val;
-  updateProgress();
-}
-
-function toggleChip(el) {
-  el.classList.toggle('selected');
-  updateProgress();
-}
-
-function toggleTool(el) {
-  el.classList.toggle('selected');
-  el.classList.contains('selected') ? toolSelections.add(el.dataset.val) : toolSelections.delete(el.dataset.val);
-  updateProgress();
-}
-
-function selectScale(el, groupId) {
-  document.getElementById(groupId).querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  scaleSelections[groupId] = el.dataset.val;
-  updateProgress();
-}
+const totalSteps = 4;
+let currentStep = 1;
+const answers = { name: '', email: '', teamSize: '', painPoint: '', note: '' };
 
 function updateProgress() {
-  const textFields = ['name','email','company','current-flow','goal'];
-  let filled = textFields.filter(f => (document.getElementById(f)?.value||'').trim().length > 2).length;
-  ['team-size','industry','use-case'].forEach(k => { if (chipSelections[k]) filled++; });
-  if (toolSelections.size > 0) filled++;
-  const total = textFields.length + 3 + 1;
-  document.getElementById('progress').style.width = Math.round((filled / total) * 100) + '%';
+  document.getElementById('progress').style.width = Math.round((currentStep / totalSteps) * 100) + '%';
+  document.getElementById('step-count').innerHTML = `Otázka <strong>${currentStep}</strong>/${totalSteps}`;
 }
 
-document.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', updateProgress));
-
-function collectData() {
-  return {
-    name: document.getElementById('name').value.trim(),
-    email: document.getElementById('email').value.trim(),
-    company: document.getElementById('company').value.trim(),
-    role: document.getElementById('role').value.trim(),
-    teamSize: chipSelections['team-size'] || '',
-    industry: chipSelections['industry'] || '',
-    currentTools: [...toolSelections].join(', '),
-    currentFlow: document.getElementById('current-flow').value.trim(),
-    painPoints: [...document.querySelectorAll('#pain-points .chip.selected')].map(c => c.dataset.val).join(', '),
-    useCase: [...document.querySelectorAll('#use-case .chip.selected')].map(c => c.dataset.val).join(', '),
-    goal: document.getElementById('goal').value.trim(),
-    notifChannel: chipSelections['notif-channel'] || '',
-    taskTool: chipSelections['task-tool'] || '',
-    urgency: scaleSelections['urgency'] || '',
-    adminRole: chipSelections['admin-role'] || '',
-    budget: chipSelections['budget'] || '',
-    anythingElse: document.getElementById('anything-else').value.trim(),
-  };
+function goTo(step) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.card[data-step="${step}"]`).classList.add('active');
+  currentStep = step;
+  updateProgress();
+  if (step === 1) document.getElementById('name').focus();
 }
+
+// Step 1: name/email validation
+const nameEl = document.getElementById('name');
+const emailEl = document.getElementById('email');
+function validateStep1() {
+  const ok = nameEl.value.trim().length > 1 && /\S+@\S+\.\S+/.test(emailEl.value.trim());
+  document.getElementById('btn-1').disabled = !ok;
+  return ok;
+}
+nameEl.addEventListener('input', validateStep1);
+emailEl.addEventListener('input', validateStep1);
+[nameEl, emailEl].forEach(el => el.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && validateStep1()) { e.preventDefault(); goTo(2); }
+}));
+
+// Step 2 & 3: single-select chips with auto-advance
+function wireChips(containerId, key, nextStep) {
+  const container = document.getElementById(containerId);
+  container.querySelectorAll('.opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected', 'pulse');
+      answers[key] = btn.dataset.val;
+      setTimeout(() => goTo(nextStep), 380);
+    });
+  });
+}
+wireChips('team-size', 'teamSize', 3);
+wireChips('pain-point', 'painPoint', 4);
 
 async function handleSubmit() {
-  const d = collectData();
-  const errEl = document.getElementById('error-msg');
-  errEl.style.display = 'none';
+  answers.name = nameEl.value.trim();
+  answers.email = emailEl.value.trim();
+  answers.note = document.getElementById('note').value.trim();
 
-  if (!d.name || !d.email || !d.company || !d.currentFlow || !d.goal) {
-    errEl.style.display = 'block';
-    errEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
-
-  const btn = document.getElementById('submit-btn');
+  document.getElementById('stage').style.display = 'none';
   const loading = document.getElementById('loading');
-  btn.style.display = 'none';
-  loading.style.display = 'block';
+  loading.style.display = 'flex';
 
   try {
     await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(d)
+      body: JSON.stringify(answers)
     });
-  } catch(e) {
+  } catch (e) {
     console.warn('Fetch error (no-cors expected):', e);
   }
 
-  document.getElementById('form-container').style.display = 'none';
   document.getElementById('success-screen').style.display = 'block';
   document.getElementById('progress').style.width = '100%';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+updateProgress();
 </script>
 </body>
 </html>
